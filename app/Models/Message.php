@@ -14,6 +14,7 @@ class Message extends Model
         'sender_id',
         'receiver_id',
         'content',
+        'user_id',
     ];
 
     // The user who sent the message

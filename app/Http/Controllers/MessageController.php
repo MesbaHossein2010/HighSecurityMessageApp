@@ -2,63 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MessageRequest;
+use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $user = session('user');
+        $messages = Message::where('sender_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
+            ->with(['sender', 'receiver'])
+            ->latest()
+            ->get();
+
+        return view('dashboard.message', compact('messages'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $user = User::find(session('user')->id);
+        $contacts = $user->contacts ?? [];
+
+        return view('dashboard.new-message', compact('contacts'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(MessageRequest $request)
     {
-        //
+        $user = session('user');
+
+        Message::create([
+            'sender_id' => $user->id,
+            'receiver_id' => $request->input('receiver_id'),
+            'content' => $request->input('content'),
+        ]);
+
+        return redirect()->route('dashboard.messages')->with('success', 'Message sent successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+//    public function show(string $id)
+//    {
+//        $user = session('user');
+//        $message = Message::with(['sender', 'receiver'])->findOrFail($id);
+//
+//        if ($message->user_id !== $user->id && $message->receiver_id !== $user->id) {
+//            abort(403);
+//        }
+//
+//        return view('dashboard.message-show', compact('message'));
+//    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

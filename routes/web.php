@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,8 @@ Route::prefix('dashboard')->middleware('CheckAuth')->group(function() {
     Route::get('/users', [UserController::class, 'index'])->name('dashboard.users');
     Route::get('/messages', [MessageController::class, 'index'])->name('dashboard.messages');
     Route::get('/new-message', [MessageController::class, 'create'])->name('dashboard.new-message');
-    Route::post('/send-message', [MessageController::class, 'store'])->name('dashboard.send-message');
+    Route::post('/new-message', [MessageController::class, 'store'])->name('dashboard.send-message');
+    Route::get('/contacts', [ContactController::class, 'index'])->name('dashboard.contacts');
+    Route::post('/contacts', [ContactController::class, 'store'])->name('dashboard.contacts.add');
+    Route::delete('/contacts/{id}', [ContactController::class, 'destroy'])->name('dashboard.contacts.remove');
 });

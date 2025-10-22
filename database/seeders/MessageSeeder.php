@@ -17,7 +17,6 @@ class MessageSeeder extends Seeder
             return;
         }
 
-        // Generate 50 random messages
-        Message::factory()->count($users->count()*2)->create();
+        Message::factory()->count($users->count()*10)->create();
     }
 }

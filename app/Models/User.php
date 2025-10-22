@@ -13,6 +13,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'user_id');
+    }
     /**
      * The attributes that are mass assignable.
      *
